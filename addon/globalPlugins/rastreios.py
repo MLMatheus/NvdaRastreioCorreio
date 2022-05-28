@@ -6,7 +6,7 @@ import api
 import json
 
 def GetRastreio(code):
-        url ="https://proxyapp.correios.com.br/v1/sro-rastro/{}".format(code)
+        url = "https://proxyapp.correios.com.br/v1/sro-rastro/{}".format(code)
         headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 tSafari/537.36'}
         res = urllib.request.Request(url)
         res.add_header('user-agent', 'M	ozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36')
@@ -22,9 +22,17 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         dtHrCriado=send['objetos'][0]['eventos'][0]['dtHrCriado']
         dtHrCriado=dtHrCriado[8:10]+'/'+dtHrCriado[5:7]+'/'+dtHrCriado[0:4]+' '+dtHrCriado[11:13]+':'+dtHrCriado[14:16]
 
-        msgText='{}, em {} {}, {}. Data: {}'.format(send['objetos'][0]['eventos'][0]['descricao'], send['objetos'][0]['eventos'][0]['unidade']['endereco']['cidade'], send['objetos'][0]['eventos'][0]['unidade']['endereco']['uf'], send['objetos'][0]['eventos'][0]['unidade']['tipo'], dtHrCriado)
+        msgText='{}, em {} {}, {}. Data: {}'.format(
+            send['objetos'][0]['eventos'][0]['descricao'],
+            send['objetos'][0]['eventos'][0]['unidade']['endereco']['cidade'],
+            send['objetos'][0]['eventos'][0]['unidade']['endereco']['uf'],
+            send['objetos'][0]['eventos'][0]['unidade']['tipo'],
+            dtHrCriado
+        )
 
         ui.message(str(msgText))
+
+    script_obterUltimoEvento.__doc__ = "Obtém dados do último status do objeto atual nos Correios"
 
     def script_TodosEventos(self, gesture):
         clipboardText = api.getClipData()
@@ -38,6 +46,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             msgText='{}, em {} {}, {}. Data: {}'.format(i['descricao'], i['unidade']['endereco']['cidade'], i['unidade']['endereco']['uf'], i['unidade']['tipo'], dtHrCriado)
             ui.message(str(msgText))
 
+    script_TodosEventos.__doc__ = "Obtém todos os eventos do objeto atual nos Correios"
 
     __gestures={
         "kb:nvda+e": "obterUltimoEvento",
