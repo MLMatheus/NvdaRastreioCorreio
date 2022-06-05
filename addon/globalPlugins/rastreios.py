@@ -62,7 +62,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     script_obterUltimoEvento.__doc__ = "Obtém dados do último status do objeto atual nos Correios"
 
     def script_TodosEventos(self, gesture):
-        clipboardText = api.getClipData()
+        try:
+            clipboardText = api.getClipData()
             if validarCodigo(clipboardText) != True:
                 ui.message("Código inválido")
                 return
