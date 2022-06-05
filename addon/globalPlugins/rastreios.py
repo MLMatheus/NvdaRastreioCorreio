@@ -14,9 +14,36 @@ def GetRastreio(code):
         content=json.load(content)
         return content
 
+def validarCodigo(codigo: str):
+    if len(codigo) != 13:
+        return False
+
+    caracteresIniciais = codigo[0:2]
+
+    if caracteresIniciais.isupper() != True:
+        return False
+
+    caracteresFinais = codigo[len(codigo) - 2:len(codigo)]
+
+    if caracteresFinais != "BR":
+        return False
+
+    caracteresMeio = codigo[2:len(codigo) - 2]
+
+    if caracteresMeio.isnumeric() != True:
+        return False
+
+    return True
+
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def script_obterUltimoEvento(self, gesture):
-        clipboardText = api.getClipData()
+        try:
+            clipboardText = api.getClipData()
+            if validarCodigo(clipboardText) != True:
+                ui.message("Código inválido")
+                return
+        except:
+            ui.message("Código inválido")
         send=GetRastreio(clipboardText)
 #Formatar a data em pt-BR
         dtHrCriado=send['objetos'][0]['eventos'][0]['dtHrCriado']
@@ -36,6 +63,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
     def script_TodosEventos(self, gesture):
         clipboardText = api.getClipData()
+            if validarCodigo(clipboardText) != True:
+                ui.message("Código inválido")
+                return
+        except:
+            ui.message("Código inválido")
+
         send=GetRastreio(clipboardText)
 #percorrer todos os eventos
         for i in send['objetos'][0]['eventos']:
